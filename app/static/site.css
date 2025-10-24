@@ -1,0 +1,31 @@
+body { background-color: #f5f7fb; color: #111827; }
+
+header { background-color: #111827; color: #f9fafb; padding: 0.75rem 1.5rem; }
+header a { color: #f9fafb; margin-left: 1rem; text-decoration: none; }
+
+.container { max-width: 1100px; margin: 2rem auto; padding: 0 1rem; }
+.panel { background: #ffffff; border-radius: 10px; padding: 1.25rem; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08); margin-bottom: 2rem; }
+
+table { width: 100%; border-collapse: separate; border-spacing: 0; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06); font-size: 15px; }
+th { text-align: left; font-weight: 700; background: #f3f4f6; color: #111827; position: sticky; top: 0; z-index: 1; }
+th, td { padding: 0.9rem 0.85rem; border-bottom: 1px solid #e5e7eb; }
+tr:last-child td { border-bottom: none; }
+td code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; color: #0f172a; }
+
+/* Row accent and zebra striping; avoid framework .active background bleed */
+.instances-table tbody tr td { background: #fff; }
+.instances-table tbody tr:nth-child(even) td { background: #fafafa; }
+.instances-table tr.status-row { border-left: 4px solid transparent; }
+.instances-table tr.status-active { border-left-color: #16a34a; }
+.instances-table tr.status-offline { border-left-color: #ef4444; }
+
+.status-badge { display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; font-weight: 600; font-size: 0.85rem; line-height: 1; }
+.status-badge.status-active { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.status-badge.status-offline { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+.muted { color: #4b5563; font-size: 0.9rem; }
+.nowrap { white-space: nowrap; }
+.ellipsis { max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: bottom; }
+
+.error { color: #b91c1c; }
+.notice { background: #ecfccb; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; }

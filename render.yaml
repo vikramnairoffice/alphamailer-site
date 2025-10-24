@@ -1,0 +1,28 @@
+databases:
+  - name: url-registry-db
+    databaseName: url_registry
+    plan: free
+    ipAllowList: []
+
+services:
+  - type: web
+    name: url-registry-admin
+    env: python
+    plan: free
+    region: oregon
+    rootDir: .
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    autoDeploy: true
+    healthCheckPath: /admin/login
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: url-registry-db
+          property: connectionString
+      - key: API_TOKEN
+        sync: false  # set in Render dashboard at deploy time
+      - key: SESSION_SECRET
+        sync: false  # set in Render dashboard at deploy time
+      - key: ACTIVE_MINUTES
+        value: "10"

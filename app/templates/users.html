@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel">
+  <h2>Create user</h2>
+  <form method="post">
+    <label>Email
+      <input type="email" name="email" required />
+    </label>
+    <label>Password
+      <input type="password" name="password" required />
+    </label>
+    <label>
+      <input type="checkbox" name="is_admin" value="1" checked />
+      Admin privileges
+    </label>
+    <button type="submit">Create</button>
+  </form>
+</section>
+
+<section>
+  <h2>Users</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Admin</th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in users %}
+      <tr>
+        <td>{{ item.email }}</td>
+        <td>{{ 'yes' if item.is_admin else 'no' }}</td>
+        <td>{{ item.created_at }}</td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="3">No users</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h2>Instances</h2>
+  <p>
+    Active: {{ active_count }}
+  </p>
+  <table class="instances-table">
+    <thead>
+      <tr>
+        <th class="nowrap">ID</th>
+        <th class="nowrap">Status</th>
+        <th class="nowrap">Public URL</th>
+        <th class="nowrap">Local URL</th>
+        <th class="nowrap">Session</th>
+        <th class="nowrap">Host</th>
+        <th class="nowrap">Started</th>
+        <th class="nowrap">Last Seen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inst in instances %}
+      <tr class="status-row status-{{ inst.status }}">
+        <td class="ellipsis" title="{{ inst.id }}">{{ inst.id }}</td>
+        <td><span class="status-badge status-{{ inst.status }}">{{ inst.status }}</span></td>
+        <td>{% if inst.public_url %}<a href="{{ inst.public_url }}" target="_blank">link</a>{% else %}-{% endif %}</td>
+        <td><code class="ellipsis" title="{{ inst.local_url }}">{{ inst.local_url }}</code></td>
+        <td class="ellipsis" title="{{ inst.session_name or '-' }}">{{ inst.session_name or '-' }}</td>
+        <td class="nowrap">{{ inst.host or '-' }}</td>
+        <td class="nowrap" title="{{ inst.started_at }}">{{ inst.started_fmt }}</td>
+        <td class="nowrap" title="{{ inst.last_seen }}">{{ inst.last_seen_fmt }} <span class="muted">({{ inst.last_seen_ago }})</span></td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="8">No running instances.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}
