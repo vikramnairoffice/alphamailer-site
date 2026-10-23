@@ -14,6 +14,7 @@ class Settings:
         self.session_cookie_name = os.getenv("SESSION_COOKIE_NAME", "url_registry_session")
         # number of minutes to consider an instance active
         self.active_minutes = int(os.getenv("ACTIVE_MINUTES", "15"))
+        self.enable_browser_send = os.getenv("ENABLE_WORKER_DELIVERY", os.getenv("ENABLE_BROWSER_SEND", "false")).lower() == "true"
 
 
 @lru_cache

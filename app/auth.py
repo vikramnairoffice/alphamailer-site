@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import datetime as dt
+import time
+import secrets
 from typing import Optional
 
 from fastapi import Depends, HTTPException, Request, status
@@ -35,7 +37,7 @@ def _get_serializer() -> URLSafeSerializer:
 
 def create_session_token(user_id: int) -> str:
     serializer = _get_serializer()
-    payload = {"user_id": user_id, "issued_at": dt.datetime.utcnow().timestamp()}
+    payload = {"user_id": user_id, "issued_at": time.time()}
     return serializer.dumps(payload)
 
 
@@ -44,6 +46,11 @@ def decode_session_token(token: str) -> Optional[int]:
     try:
         data = serializer.loads(token)
     except BadSignature:
+        return None
+    if not isinstance(data, dict):
+        return None
+    issued_at = data.get("issued_at")
+    if not isinstance(issued_at, (int, float)) or not 0 <= time.time() - issued_at <= 8 * 3600:
         return None
     return data.get("user_id")
 
@@ -75,5 +82,5 @@ async def require_api_token(credentials: HTTPAuthorizationCredentials | None = D
     settings = get_settings()
     if not settings.api_token:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="API token not configured")
-    if credentials is None or credentials.scheme.lower() != "bearer" or credentials.credentials != settings.api_token:
+    if credentials is None or credentials.scheme.lower() != "bearer" or not secrets.compare_digest(credentials.credentials, settings.api_token):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")

@@ -1,0 +1,240 @@
+{
+  "$defs": {
+    "Attachment": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 180,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "mime_type": {
+          "default": "application/octet-stream",
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Mime Type",
+          "type": "string"
+        },
+        "data_base64": {
+          "maxLength": 2800000,
+          "title": "Data Base64",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "data_base64"
+      ],
+      "title": "Attachment",
+      "type": "object"
+    },
+    "CampaignItem": {
+      "additionalProperties": false,
+      "properties": {
+        "lead_id": {
+          "maxLength": 120,
+          "minLength": 1,
+          "title": "Lead Id",
+          "type": "string"
+        },
+        "worker_id": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Worker Id",
+          "type": "string"
+        },
+        "account_email": {
+          "title": "Account Email",
+          "type": "string"
+        },
+        "operation": {
+          "enum": [
+            "engine.command",
+            "gmail.compose",
+            "gmail.draft"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "execution": {
+          "default": "preview",
+          "enum": [
+            "preview",
+            "send"
+          ],
+          "title": "Execution",
+          "type": "string"
+        },
+        "delivery": {
+          "default": "send",
+          "enum": [
+            "send",
+            "draft"
+          ],
+          "title": "Delivery",
+          "type": "string"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PreparedMessage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "lead": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lead"
+        },
+        "config": {
+          "anyOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Config"
+        }
+      },
+      "required": [
+        "lead_id",
+        "worker_id",
+        "account_email",
+        "operation"
+      ],
+      "title": "CampaignItem",
+      "type": "object"
+    },
+    "PreparedMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "to": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "To",
+          "type": "array"
+        },
+        "subject": {
+          "maxLength": 998,
+          "title": "Subject",
+          "type": "string"
+        },
+        "body": {
+          "maxLength": 250000,
+          "title": "Body",
+          "type": "string"
+        },
+        "body_format": {
+          "default": "text",
+          "enum": [
+            "text",
+            "html"
+          ],
+          "title": "Body Format",
+          "type": "string"
+        },
+        "attachments": {
+          "items": {
+            "$ref": "#/$defs/Attachment"
+          },
+          "maxItems": 4,
+          "title": "Attachments",
+          "type": "array"
+        },
+        "rfc822_message_id": {
+          "anyOf": [
+            {
+              "maxLength": 254,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rfc822 Message Id"
+        }
+      },
+      "required": [
+        "to",
+        "subject",
+        "body"
+      ],
+      "title": "PreparedMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "enum": [
+        1
+      ],
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "idempotency_key": {
+      "maxLength": 120,
+      "minLength": 8,
+      "title": "Idempotency Key",
+      "type": "string"
+    },
+    "min_interval_seconds": {
+      "default": 0,
+      "maximum": 3600,
+      "minimum": 0,
+      "title": "Min Interval Seconds",
+      "type": "integer"
+    },
+    "assignments": {
+      "items": {
+        "$ref": "#/$defs/CampaignItem"
+      },
+      "maxItems": 500,
+      "minItems": 1,
+      "title": "Assignments",
+      "type": "array"
+    },
+    "confirmation": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confirmation"
+    }
+  },
+  "required": [
+    "idempotency_key",
+    "assignments"
+  ],
+  "title": "CampaignCreate",
+  "type": "object"
+}

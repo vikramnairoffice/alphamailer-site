@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Connected workers</h2>
+<p>Android and browser workers connect outward to this coordinator. Colab sessions remain on the <a href="/admin/">instance dashboard</a>.</p>
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+{% if paired %}
+<section role="status"><h3>Worker paired: {{ paired.name }}</h3>
+<p>Copy this credential into that worker. It is shown only in this response.</p>
+<label>Worker token <input readonly value="{{ paired.worker_token }}" autocomplete="off" style="width:100%"></label></section>
+{% endif %}
+<table><thead><tr><th>Name</th><th>Platform</th><th>Status</th><th>Accounts</th><th>Capabilities</th></tr></thead>
+<tbody>{% for worker in workers %}<tr><td>{{ worker.name }}<br><small>{{ worker.id }}</small></td><td>{{ worker.platform }}</td><td>{{ worker.status }}</td><td>{{ worker.accounts|join(', ') }}</td><td>{{ worker.capabilities|join(', ') }}</td></tr>
+{% else %}<tr><td colspan="5">No workers paired yet.</td></tr>{% endfor %}</tbody></table>
+<details><summary>Pair a worker</summary>
+<form method="post" action="/admin/fleet/pair">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<p><label>Name <input name="name" required maxlength="120"></label></p>
+<p><label>Platform <select name="platform"><option value="android">Android</option><option value="chrome">Chrome</option><option value="firefox">Firefox</option></select></label></p>
+<p><label>Browser accounts, separated by commas <input name="accounts" placeholder="first@example.com, second@example.com"></label></p>
+<p><label>Parallel browser tabs <input name="max_parallel" type="number" min="1" max="10" value="10" required></label></p>
+<p>Pair up to ten distinct Gmail accounts and bind each to its own tab in the extension. Each account and tab runs one job at a time, up to this worker's capacity. Android workers keep one execution slot.</p>
+<button>Pair worker</button></form></details>
+<details><summary>Run a probe or prepare a Gmail preview</summary>
+<p>A compose preview creates a draft in the bound Gmail tab. This form never sends mail.</p>
+<form method="post" action="/admin/fleet/jobs">
+<input type="hidden" name="csrf" value="{{ csrf }}">
+<input type="hidden" name="submission_id" value="{{ submission_id }}">
+<p><label>Worker <select name="worker_id" required>{% for worker in workers %}<option value="{{ worker.id }}">{{ worker.name }}</option>{% endfor %}</select></label></p>
+<p><label>Operation <select name="operation"><option value="runtime.probe">Check runtime</option><option value="gmail.compose">Compose preview</option><option value="gmail.draft">Inspect existing draft</option></select></label></p>
+<p><label>Gmail account <input name="account" type="email"></label></p>
+<p><label>Recipients <input name="to" placeholder="recipient@example.com"></label></p>
+<p><label>Subject <input name="subject" maxlength="998"></label></p>
+<p><label>Body <textarea name="body" rows="5"></textarea></label></p>
+<p><label>Exact Message-ID for an existing draft <input name="draft_id"></label></p>
+<button>Queue preview or probe</button></form></details>
+<h2>Fleet campaigns</h2>
+<p>Each lead has one durable assignment. Cancelling stops queued assignments; active or uncertain work still needs reconciliation.</p>
+<table><thead><tr><th>Campaign</th><th>State</th><th>Progress</th><th>Action</th></tr></thead><tbody>
+{% for campaign in campaigns %}<tr><td><a href="/api/v1/campaigns/{{ campaign.id }}">{{ campaign.id }}</a></td>
+<td>{{ campaign.state }}</td><td>{{ campaign.counts.succeeded }} succeeded / {{ campaign.total }} total;
+{{ campaign.counts.failed }} failed, {{ campaign.counts.uncertain }} uncertain,
+{{ campaign.counts.cancelled }} cancelled</td><td>{% if campaign.state == 'running' %}
+<form method="post" action="/admin/fleet/campaigns/{{ campaign.id }}/cancel">
+<input type="hidden" name="csrf" value="{{ csrf }}"><button>Cancel queued leads</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="4">No fleet campaigns yet.</td></tr>{% endfor %}</tbody></table>
+<h2>Recent jobs</h2>
+<p>Uncertain jobs require reconciliation. They are never automatically resent.</p>
+<table><thead><tr><th>Operation / account</th><th>State</th><th>Evidence</th><th>Action</th></tr></thead><tbody>
+{% for job in jobs %}<tr><td>{{ job.operation }}<br>{{ job.account_email or 'Runtime' }}<br><small>{{ job.id }}</small></td><td>{{ job.state }} ({{ job.execution }})</td><td>{{ job.detail }}{% if job.result %}<pre>{{ job.result|tojson(indent=2) }}</pre>{% endif %}</td><td>{% if job.state == 'queued' %}<form method="post" action="/admin/fleet/cancel/{{ job.id }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button>Cancel</button></form>{% endif %}</td></tr>
+{% else %}<tr><td colspan="4">No jobs yet.</td></tr>{% endfor %}</tbody></table>
+{% endblock %}

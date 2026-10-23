@@ -1,4 +1,30 @@
-# URL Registry Admin (FastAPI)
+# AlphaMailer Orchestrator (FastAPI)
+
+Execution: [Plan.md](Plan.md) · [Tasks.md](Tasks.md).
+
+The original URL registry is retained. The application also implements scoped
+workers, fleet jobs/campaigns, a Gradio bridge, a shared Flutter dashboard and the
+Android Google browser OAuth broker. See the [application source map](app/README.md).
+
+## Navigation
+
+[Suite index](../README.md) · [Contributor rules](AGENTS.md) · [Architecture](Architecture.md)
+
+| Need | Start here |
+| --- | --- |
+| Current fleet startup, topology and dated verification | [Implementation status](Implementation-Status.md) |
+| Worker, job, campaign and cancellation API | [Protocol version 1](contracts/v1/README.md) |
+| HTTPS OAuth broker setup and limits | [Google browser authorization](Google-Browser-Auth.md) |
+| Scope and remaining work | [Scope](Scope.md), [plan](Plan.md), [tasks](Tasks.md) |
+| Native Gradio campaign operator screen | [Automation workflow](../Alphamailer-automation/docs/Operations.md#campaign-import-and-cancellation) |
+| Original registry deployment notes | [Render notes](README_RENDER.md) |
+
+The sections below describe the original registry. For current fleet operation,
+use the linked status/setup guide and keep one coordinator process unless its
+Gradio session/handle architecture is changed and tested. The Render notes are
+historical setup guidance, not current hosting/pricing or deployment verification.
+
+## Original registry
 
 Small FastAPI app that accepts public URLs from the Alpha Mailer runners and exposes a lightweight admin panel.
 
@@ -12,7 +38,7 @@ Small FastAPI app that accepts public URLs from the Alpha Mailer runners and exp
 ## Quick start
 
 ```bash
-cd web_admin
+# Run from the Alphamilaer-Orchestrator directory.
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt

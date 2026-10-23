@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "enum": [
+        1
+      ],
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "refresh_token": {
+      "maxLength": 8192,
+      "minLength": 1,
+      "title": "Refresh Token",
+      "type": "string"
+    },
+    "receipt": {
+      "maxLength": 16384,
+      "minLength": 40,
+      "title": "Receipt",
+      "type": "string"
+    }
+  },
+  "required": [
+    "refresh_token",
+    "receipt"
+  ],
+  "title": "GoogleOAuthRefresh",
+  "type": "object"
+}

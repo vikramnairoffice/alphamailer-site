@@ -1,0 +1,58 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "platform": {
+      "enum": [
+        "android",
+        "chrome",
+        "firefox",
+        "test"
+      ],
+      "title": "Platform",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "enum": [
+          "runtime.probe",
+          "gmail.compose",
+          "gmail.draft",
+          "engine.command"
+        ],
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 1,
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "accounts": {
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 10,
+      "title": "Accounts",
+      "type": "array"
+    },
+    "max_parallel": {
+      "default": 1,
+      "maximum": 10,
+      "minimum": 1,
+      "title": "Max Parallel",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "name",
+    "platform",
+    "capabilities"
+  ],
+  "title": "WorkerCreate",
+  "type": "object"
+}

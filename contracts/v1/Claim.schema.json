@@ -1,0 +1,44 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "enum": [
+        1
+      ],
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "session_id": {
+      "maxLength": 64,
+      "minLength": 8,
+      "title": "Session Id",
+      "type": "string"
+    },
+    "slot_id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Slot Id",
+      "type": "string"
+    },
+    "account_email": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Account Email"
+    }
+  },
+  "required": [
+    "session_id",
+    "slot_id"
+  ],
+  "title": "Claim",
+  "type": "object"
+}

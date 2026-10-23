@@ -1,0 +1,6 @@
+{
+  "android_claim": {"protocol_version": 1, "session_id": "fixture-session", "slot_id": "android-runtime", "account_email": null},
+  "browser_claim": {"protocol_version": 1, "session_id": "fixture-session", "slot_id": "tab-1", "account_email": "account0@example.com"},
+  "compose_preview": {"protocol_version": 1, "idempotency_key": "fixture-preview-0001", "worker_id": "fixture-worker", "operation": "gmail.compose", "account_email": "account0@example.com", "execution": "preview", "message": {"to": ["recipient@example.com"], "subject": "Fixture preview", "body": "Prepared content", "body_format": "text", "attachments": []}},
+  "probe_result": {"protocol_version": 1, "job_id": "fixture-job", "lease_token": "fixture-lease-token-0000", "session_id": "fixture-session", "state": "succeeded", "detail": "", "result": {"engine_integrated": false, "capabilities": ["runtime.probe"]}}
+}

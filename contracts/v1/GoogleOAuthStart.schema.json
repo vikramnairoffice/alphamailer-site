@@ -1,0 +1,24 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "enum": [
+        1
+      ],
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "email": {
+      "maxLength": 254,
+      "title": "Email",
+      "type": "string"
+    }
+  },
+  "required": [
+    "email"
+  ],
+  "title": "GoogleOAuthStart",
+  "type": "object"
+}

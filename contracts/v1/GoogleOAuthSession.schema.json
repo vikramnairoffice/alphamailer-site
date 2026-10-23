@@ -1,0 +1,32 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "protocol_version": {
+      "const": 1,
+      "default": 1,
+      "enum": [
+        1
+      ],
+      "title": "Protocol Version",
+      "type": "integer"
+    },
+    "session_id": {
+      "maxLength": 36,
+      "minLength": 36,
+      "title": "Session Id",
+      "type": "string"
+    },
+    "handoff_key": {
+      "maxLength": 128,
+      "minLength": 40,
+      "title": "Handoff Key",
+      "type": "string"
+    }
+  },
+  "required": [
+    "session_id",
+    "handoff_key"
+  ],
+  "title": "GoogleOAuthSession",
+  "type": "object"
+}
