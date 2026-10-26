@@ -1,4 +1,27 @@
-# Orchestrator implementation status — 2026-09-27
+# Orchestrator implementation status
+
+## Current source review - 2026-10-23
+
+Source revision `d465e72` contains the registry, scoped fleet/job API, durable
+campaign assignments/progress, queued cancellation, Gradio bridge and Android
+Google OAuth broker. Browser workers support up to ten account slots while
+preserving lower paired limits. See [registered routers](app/main.py),
+[campaign ownership](app/campaign_service.py), [worker routes](app/fleet_routes.py)
+and [OAuth implementation](app/google_oauth.py).
+
+`ORC-103` is partly implemented: counts, drill-down and queued cancellation exist;
+acknowledged in-flight stopping and real mixed-worker recovery remain open.
+`ORC-104` through `ORC-107` still require final original callback mapping,
+mixed-client restart coverage, external artifact recovery and complete consumer
+agreement. Current source preserves process-local Gradio sessions/handles, so
+one coordinator process remains the supported baseline. Database/backup/restore
+and live cloud/device/provider acceptance remain separate.
+
+This was source/test-file review only, not a new pytest or deployment result.
+Use the [suite progress review](../Progress-Review.md#orchestrator) for cross-project
+dependencies. The historical checkpoints below retain their actual test dates.
+
+## Historical implementation checkpoint - 2026-09-27
 
 The coordinator now connects legacy Gradio sessions, Android engine workers and
 Chrome/Firefox browser workers. The user-authored Project Scope.md, Tasks and

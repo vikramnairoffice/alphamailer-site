@@ -17,6 +17,11 @@ Checked items are bounded code/local evidence from
 
 ## Independent development
 
+Source reconciliation 2026-10-23: router/service/test-file review confirms durable
+campaigns, aggregate views, queued cancellation, the OAuth broker and ten-slot
+browser bounds. The [current status](Implementation-Status.md) distinguishes these
+implemented parts from the remaining acceptance of `ORC-103` through `ORC-107`.
+
 - [x] `ORC-005` Add local application and protocol Plan.md/Tasks.md pairs, linked
   from the [project plan](Plan.md#directory-plans-and-tasks) (2026-10-19;
   documentation only; existing protocol and runtime acceptance remain unchanged).

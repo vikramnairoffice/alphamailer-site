@@ -2,6 +2,11 @@
 
 Baseline: 2026-09-27. Owner: coordinator, fleet protocol and Gradio bridge.
 
+Source reconciliation: 2026-10-23 at `d465e72`. The
+[current source review](Implementation-Status.md) records implemented campaign,
+OAuth and ten-slot behavior separately from remaining mixed-client, artifact,
+final legacy mapping and operations acceptance. No new runtime tests ran here.
+
 ## Goal and baseline
 
 Coordinate Colab/VM, Android and browser workers from one dashboard while reusing

@@ -2,8 +2,9 @@
 
 ## Objective and protected boundary
 
-Build the coordination service and dashboard independently while four existing
-Alphamailer sprints continue. The sibling `../Alphamailer/` directory is protected:
+Build the coordination service and dashboard independently of the existing
+Alphamailer frontend workstream. Its earlier four-sprint count is historical,
+not a verified current status. The sibling `../Alphamailer/` directory is protected:
 do not edit it, install packages into it, generate files there, run migrations
 there, or run commands which produce its caches or runtime data. Read-only source
 inspection is permitted. All implementation, tests, fixtures, generated schemas,
@@ -40,8 +41,10 @@ silently replace.
 The checked-in application is FastAPI + SQLAlchemy + Jinja templates, with
 SQLite by default and PostgreSQL configuration support. It accepts existing
 `POST /api/instances` publications, lists instances, and provides a login/admin
-interface. This is a registry, not an already implemented campaign scheduler.
-Keep those endpoints and existing tables backward compatible.
+interface. It also implements scoped fleet jobs, durable campaign assignments,
+aggregate progress/queued cancellation, a Gradio bridge and an Android OAuth
+broker. Keep the original registry endpoints/tables backward compatible. Consult
+[current status](Implementation-Status.md) for implemented versus partial work.
 
 The long-term common web/Android presentation direction is Flutter. Extend the
 existing dashboard now for independently useful fleet operations; do not block
@@ -81,11 +84,13 @@ version and explicit compatibility behavior. Browser and Android clients must
 consume the published shape, not invent their own command names or states.
 Do not duplicate mailer business rules in the coordinator or clients.
 
-Initial operations are `runtime.probe`, `gmail.compose`, and `gmail.draft`.
+Version-1 operations are `runtime.probe`, `gmail.compose`, `gmail.draft`, and
+`engine.command`; engine commands include assignment-aware campaign execution.
 Gmail jobs accept already prepared recipient, subject, body, and attachment data.
-This does not claim that campaign rendering has already been extracted from the
-legacy engine. Browser execution defaults to preview. Actual sending requires
-explicit operator intent and a server-side enablement setting; never send as a
+Shared-engine packaging/preparation and browser export are implemented, but final
+original-source parity remains open. Browser execution defaults to preview.
+Actual sending requires explicit operator intent and a server-side enablement
+setting; never send as a
 side effect of registration, health checking, page load, or demo startup.
 
 ## Identity, authentication, and data handling
@@ -173,9 +178,10 @@ real service behavior verified, and remaining device/provider gates. Do not call
 a fake worker, fixture Gmail page, or runtime capability probe a production pass.
 Confirm the protected mailer directory was not changed by this work.
 
-## Starting checkpoint
+## Historical starting checkpoint
 
-`app/fleet_models.py` and `app/fleet_schemas.py` were started before these guides
-were requested. They are unfinished and unverified until integrated and tested.
-Python and Node are available. Flutter/Android tooling was not found during the
-initial environment inspection; Android APK verification must be stated separately.
+The original guides preceded the integrated fleet/schema and Flutter/Android
+builds. That unfinished starting state has been superseded by the dated evidence
+in [Implementation-Status.md](Implementation-Status.md). Recheck current tools
+before reproducing tests, and retain the remaining mixed-client, live/provider
+and release gates rather than treating the historical baseline as current.

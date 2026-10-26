@@ -45,7 +45,8 @@ pip install -r requirements.txt
 # set secrets for dev
 export API_TOKEN="dev-api-token"
 export SESSION_SECRET="dev-session-secret"
-python seed_admin.py --email admin@example.com --password mypass
+# Set DEV_ADMIN_PASSWORD privately in this shell before running the seed command.
+python seed_admin.py --email admin@example.invalid --password "$DEV_ADMIN_PASSWORD"
 uvicorn app.main:app --reload
 ```
 
@@ -93,6 +94,10 @@ Response:
 - `/admin/logout` – clear session
 
 ## Next steps
-- Deploy wherever you like (Railway, Render, Fly.io, etc.)
-- Add heartbeats or deletion endpoints if needed
-- Keep the project separate by copying or cloning this folder
+
+Worker heartbeats and fleet/campaign APIs already exist. Use the
+[current source review](Implementation-Status.md#current-source-review---2026-10-23)
+and [tasks](Tasks.md) for remaining legacy mapping, mixed-client recovery,
+artifact persistence and operations. Run one coordinator process for the current
+process-local Gradio bridge. Deployment is a separate requested operation;
+historical Render notes do not establish a tested production release.
