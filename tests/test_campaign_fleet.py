@@ -1,4 +1,5 @@
 import datetime as dt
+import pytest
 
 from sqlalchemy import select
 
@@ -151,6 +152,25 @@ def test_account_pacing_and_expired_assignment_never_requeues(client, operator, 
     assert claim(client, second, "second@example.com").json()["job"] is None
     status = client.get(f"/api/v1/campaigns/{campaign['id']}", headers=operator).json()
     assert status["counts"]["uncertain"] == 1
+
+
+@pytest.mark.parametrize('gap', [1, 600])
+def test_paced_empty_claim_returns_exact_retry_deadline(client, operator, paired, monkeypatch, gap):
+    clock = dt.datetime(2026, 11, 4, tzinfo=dt.timezone.utc)
+    monkeypatch.setattr(fleet_service, 'now', lambda: clock)
+    second = second_worker(client, operator)
+    created = client.post('/api/v1/campaigns', headers=operator, json=manifest(paired, second, interval=gap))
+    assert created.status_code == 201
+    first = claim(client, paired, 'account0@example.com').json()
+    # Timing hints never allow another claim while the account has an active job.
+    assert claim(client, paired, 'account0@example.com').json() == {'job': None}
+    assert report(client, paired, first, 'running').status_code == 200
+    assert report(client, paired, first, 'succeeded').status_code == 200
+    assert claim(client, paired, 'account0@example.com').json() == {'job': None, 'retry_after_ms': gap * 1000}
+    clock += dt.timedelta(seconds=gap, milliseconds=-250)
+    assert claim(client, paired, 'account0@example.com').json() == {'job': None, 'retry_after_ms': 250}
+    clock += dt.timedelta(milliseconds=250)
+    assert claim(client, paired, 'account0@example.com').json()['job'] is not None
 
 
 def test_cancel_does_not_relabel_inflight_assignment_as_finished(client, operator, paired):

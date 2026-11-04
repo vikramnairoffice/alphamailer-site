@@ -36,13 +36,13 @@
       "items": {
         "type": "string"
       },
-      "maxItems": 10,
+      "maxItems": 20,
       "title": "Accounts",
       "type": "array"
     },
     "max_parallel": {
       "default": 1,
-      "maximum": 10,
+      "maximum": 20,
       "minimum": 1,
       "title": "Max Parallel",
       "type": "integer"

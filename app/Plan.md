@@ -25,3 +25,6 @@ not a declaration that the entire parent milestone is complete. Add dated
 acceptance evidence before checking runtime work, and update the relevant source
 map/workflow guide when behavior changes. Child directories without their own
 planning pair inherit this directory's scope.
+
+2026-11-04 (`ORC-103`): Publish additive relative pacing hints from the canonical
+claim path so browser workers can schedule the next eligible check precisely.

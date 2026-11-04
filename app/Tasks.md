@@ -18,6 +18,8 @@ Parent work and acceptance: [project Tasks.md](../Tasks.md).
   Parent task dependencies: `ORC-104`.
 - [ ] `ORC-APP-103` Verify schema/fixture compatibility across Android and browser consumers.
   Parent task dependencies: `ORC-107`.
+  Progress 2026-11-03: browser `max_parallel` and account list bounds are 20;
+  Android pairing still forces one slot.
 - [ ] `ORC-APP-104` Complete bounded artifact/checkpoint persistence, retention and missing-artifact behavior.
   Parent task dependencies: `ORC-106`.
 - [ ] `ORC-APP-105` Verify the selected database, backup/restore and supported process topology.
@@ -30,3 +32,6 @@ Parent project tasks remain authoritative for cross-directory acceptance; do not
 close them solely because a local documentation item is complete. Record the
 actual verification scope and link dated evidence rather than copying historical
 test totals into this file. This planning update ran no application/provider tests.
+
+- [x] 2026-11-04 / `ORC-103`: Add retry_after_ms for pacing-blocked empty claims;
+  preserve cross-campaign account pacing and active-job exclusion.

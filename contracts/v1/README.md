@@ -112,11 +112,11 @@ Do not convert these failures into permission to send again.
 
 ## Bounds and sending
 
-At most ten parallel slots and ten distinct assigned mailboxes per worker.
+At most twenty parallel slots and twenty distinct assigned mailboxes per worker.
 Workers may select a lower `max_parallel` capacity; the default remains one.
 Browser workers bind each distinct Gmail account to its own tab. Claims enforce
 one active assignment per slot/account under concurrent requests, and each
-heartbeat can renew up to ten active leases. Existing one-to-five-slot clients
+heartbeat can renew up to twenty active leases. Existing one-to-ten-slot clients
 remain compatible. Prepared messages support up to 50 To
 recipients, four files of 2 MB each, and a 250,000-character body. Large campaigns,
 BCC/CC, arbitrary MIME/headers and streaming artifact storage need later contracts.
@@ -135,3 +135,14 @@ downloaded attachment bytes are checked in local browser fixtures; real Gmail
 attachment URLs, MIME normalization and provider behavior still need acceptance.
 See [Automation's dated status](../../../Alphamailer-automation/Implementation-Status.md)
 for the exact verified browser/provider boundary.
+
+### Additive pacing hint - 2026-11-04
+
+A pacing-blocked POST /worker/claim may return {"job":null,"retry_after_ms":N},
+where N is a positive integer number of milliseconds until the earliest eligible
+claim under all applicable account/campaign gaps. It grants no lease or permission
+to send. Workers wait until that deadline and claim again normally; they must
+continue heartbeats and preserve active-account/slot limits. Empty queues, busy
+slots and cancellation can still return {"job":null} without a hint. Older
+clients/servers can ignore/omit this additive response field. Request schemas
+and protocol version remain unchanged.

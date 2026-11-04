@@ -27,8 +27,8 @@ silently replace.
   must never be reported as completion of the standalone Android requirement.
 - Browser automation is an engine delivery adapter with Chrome/Firefox workers:
   (1) send a previously created draft, (2) compose and send through Gmail UI.
-- Browser target is Gmail with up to ten distinct verified accounts, one account
-  per tab, following the 2026-10-19 capacity update. Preserve lower paired worker
+- Browser target is Gmail with up to twenty distinct verified accounts, one account
+  per tab, following the 2026-11-03 capacity update. Preserve lower paired worker
   limits; the default worker capacity remains one.
 - Turso remains the optional, read-only lead/content provider read directly by
   each active engine instance. It is not implicitly the coordinator job database.

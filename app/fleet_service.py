@@ -185,10 +185,11 @@ def claim(db, worker_id, body: Claim):
     if not job:
         db.commit()
         return {"job": None}
-    from .campaign_service import paced_claim
-    if not paced_claim(db, job):
+    from .campaign_service import claim_pacing
+    accepted, retry_after_ms = claim_pacing(db, job)
+    if not accepted:
         db.commit()
-        return {"job": None}
+        return {"job": None, **({"retry_after_ms": retry_after_ms} if retry_after_ms else {})}
     token = secrets.token_urlsafe(32)
     job.session_id, job.slot_id = body.session_id, body.slot_id
     job.lease_hash, job.lease_expires_at = digest(token), now() + dt.timedelta(seconds=LEASE_SECONDS)

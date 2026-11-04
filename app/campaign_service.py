@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import math
 import uuid
 
 from sqlalchemy import select
@@ -145,24 +146,31 @@ def submit(db: Session, body: CampaignCreate, send_enabled=False):
     return view(db, campaign.id, include_assignments=True)
 
 
-def paced_claim(db: Session, job: Job):
+def claim_pacing(db: Session, job: Job):
     assignment = db.scalar(select(CampaignAssignment).where(CampaignAssignment.job_id == job.id))
     if assignment is None:
-        return True
+        return True, None
     campaign = db.get(Campaign, assignment.campaign_id)
     if campaign.cancel_requested:
-        return False
+        return False, None
     paces = db.execute(select(CampaignPace, Campaign).join(
         Campaign, CampaignPace.campaign_id == Campaign.id).where(
         CampaignPace.account_email == assignment.account_email).with_for_update()).all()
     pace = next(row for row, owner in paces if row.campaign_id == campaign.id)
     current = fleet.now()
-    for row, owner in paces:
-        if row.last_claim_at and fleet.aware(row.last_claim_at) + dt.timedelta(
-                seconds=max(owner.min_interval_seconds, campaign.min_interval_seconds)) > current:
-            return False
+    deadlines = [fleet.aware(row.last_claim_at) + dt.timedelta(
+        seconds=max(owner.min_interval_seconds, campaign.min_interval_seconds))
+        for row, owner in paces if row.last_claim_at]
+    deadline = max(deadlines, default=current)
+    if deadline > current:
+        return False, math.ceil((deadline - current).total_seconds() * 1000)
     pace.last_claim_at = current
-    return True
+    return True, None
+
+
+def paced_claim(db: Session, job: Job):
+    """Retain the boolean helper for existing internal callers."""
+    return claim_pacing(db, job)[0]
 
 
 def cancel(db: Session, campaign_id: str):

@@ -6,7 +6,7 @@ Updated: 2026-10-19. Owner: fleet protocol version 1.
 
 ## Current baseline
 
-Canonical request models are owned by app/fleet_schemas.py; this directory contains exported schemas, fixtures and protocol/OAuth guides. Current bounds permit ten account slots while preserving lower worker capacities.
+Canonical request models are owned by app/fleet_schemas.py; this directory contains exported schemas, fixtures and protocol/OAuth guides. Current bounds permit twenty account slots while preserving lower worker capacities.
 
 Runtime evidence remains in the owning project's dated status/QA documents.
 Creating or updating this plan does not rerun application tests.
@@ -25,3 +25,6 @@ not a declaration that the entire parent milestone is complete. Add dated
 acceptance evidence before checking runtime work, and update the relevant source
 map/workflow guide when behavior changes. Child directories without their own
 planning pair inherit this directory's scope.
+
+2026-11-04 (`ORC-103`): Document additive claim retry_after_ms response guidance
+without introducing a new request operation or changing version-1 request models.

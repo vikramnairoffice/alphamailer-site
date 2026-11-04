@@ -45,7 +45,7 @@
       "items": {
         "$ref": "#/$defs/LeaseRef"
       },
-      "maxItems": 10,
+      "maxItems": 20,
       "title": "Leases",
       "type": "array"
     }

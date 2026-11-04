@@ -180,7 +180,7 @@ def fleet_page(request: Request, user=Depends(auth.require_admin), db: Session =
 
 @ui_router.post("/pair")
 def pair_form(request: Request, name: str = Form(...), platform: str = Form(...),
-              accounts: str = Form(""), csrf: str = Form(...), max_parallel: int = Form(10),
+              accounts: str = Form(""), csrf: str = Form(...), max_parallel: int = Form(20),
               user=Depends(auth.require_admin), db: Session = Depends(get_db)):
     check_csrf(request, csrf)
     try:
@@ -191,7 +191,7 @@ def pair_form(request: Request, name: str = Form(...), platform: str = Form(...)
         return render(request, user, db, paired=service.pair(db, body))
     except ValidationError:
         return render(request, user, db,
-            error="Check worker platform, up to ten plain email addresses, and 1-10 parallel browser tabs.", code=422)
+            error="Check worker platform, up to twenty plain email addresses, and 1-20 parallel browser tabs.", code=422)
 
 
 @ui_router.post("/jobs")

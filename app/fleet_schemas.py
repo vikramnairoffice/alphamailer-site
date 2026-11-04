@@ -9,7 +9,7 @@ from typing import Literal
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 PROTOCOL_VERSION = 1
-MAX_WORKER_PARALLEL = 10
+MAX_WORKER_PARALLEL = 20
 Operation = Literal["runtime.probe", "gmail.compose", "gmail.draft", "engine.command"]
 ACTIVE_STATES = ("leased", "running", "sending")
 EMAIL = re.compile(r"^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$")

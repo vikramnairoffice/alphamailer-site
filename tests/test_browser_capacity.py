@@ -14,12 +14,14 @@ from app.models import User
 
 SESSION = "ten-tab-fixture-session"
 ACCOUNTS = [f"browser{i}@example.test" for i in range(10)]
+TWENTY = [f"browser{i}@example.test" for i in range(20)]
 
 
-def pair(client, operator, capacity=10):
+def pair(client, operator, capacity=10, accounts=None):
+    accounts = ACCOUNTS if accounts is None else accounts
     response = client.post("/api/v1/workers", headers=operator, json={
         "name": "Independent browser accounts", "platform": "chrome",
-        "capabilities": ["gmail.compose"], "accounts": ACCOUNTS,
+        "capabilities": ["gmail.compose"], "accounts": accounts,
         "max_parallel": capacity,
     })
     assert response.status_code == 201, response.text
@@ -106,8 +108,22 @@ def test_distinct_accounts_and_slots_still_obey_lower_worker_capacity(client, op
     assert claim(client, worker, ACCOUNTS[2], "gmail-tab-2")["job"] is None
 
 
-@pytest.mark.parametrize("accounts,capacity", [(ACCOUNTS + ["eleven@example.test"], 10), (ACCOUNTS, 11)])
-def test_pairing_rejects_more_than_ten_accounts_or_slots(client, operator, accounts, capacity):
+def test_twenty_accounts_claim_one_job_per_tab(client, operator, database):
+    worker = pair(client, operator, capacity=20, accounts=TWENTY)
+    for index, account in enumerate(TWENTY):
+        queue(client, operator, worker, index, account)
+    leases = [claim(client, worker, account, f"gmail-tab-{index}") for index, account in enumerate(TWENTY)]
+    assert all(lease["job"] for lease in leases)
+    assert len({lease["job"]["id"] for lease in leases}) == 20
+    assert {lease["job"]["account_email"] for lease in leases} == set(TWENTY)
+    extra = claim(client, worker, TWENTY[0], "gmail-tab-extra")
+    assert extra["job"] is None
+    with database() as restarted:
+        assert len(restarted.scalars(select(Job).where(Job.state == "leased")).all()) == 20
+
+
+@pytest.mark.parametrize("accounts,capacity", [(TWENTY + ["twenty-one@example.test"], 20), (TWENTY, 21)])
+def test_pairing_rejects_more_than_twenty_accounts_or_slots(client, operator, accounts, capacity):
     response = client.post("/api/v1/workers", headers=operator, json={
         "name": "Invalid capacity", "platform": "chrome", "capabilities": ["gmail.compose"],
         "accounts": accounts, "max_parallel": capacity,
@@ -115,17 +131,17 @@ def test_pairing_rejects_more_than_ten_accounts_or_slots(client, operator, accou
     assert response.status_code == 422
 
 
-def test_heartbeat_rejects_more_than_ten_leases(client, operator):
-    worker = pair(client, operator)
+def test_heartbeat_rejects_more_than_twenty_leases(client, operator):
+    worker = pair(client, operator, capacity=20, accounts=TWENTY)
     response = client.post("/api/v1/worker/heartbeat", headers=worker["headers"], json={
         "session_id": SESSION,
-        "leases": [{"job_id": f"fixture-{index}", "lease_token": "x" * 32} for index in range(11)],
+        "leases": [{"job_id": f"fixture-{index}", "lease_token": "x" * 32} for index in range(21)],
     })
     assert response.status_code == 422
 
 
-@pytest.mark.parametrize("platform,capacity,expected", [("chrome", 7, 7), ("firefox", 10, 10), ("android", 10, 1)])
-def test_dashboard_pairs_ten_accounts_with_explicit_browser_capacity(
+@pytest.mark.parametrize("platform,capacity,expected", [("chrome", 7, 7), ("firefox", 20, 20), ("android", 20, 1)])
+def test_dashboard_pairs_twenty_accounts_with_explicit_browser_capacity(
         client, database, platform, capacity, expected):
     with database() as db:
         user = User(email="operator@example.test", hashed_password="unused", is_admin=True)
@@ -135,7 +151,7 @@ def test_dashboard_pairs_ten_accounts_with_explicit_browser_capacity(
     client.cookies.set("url_registry_session", token)
     page = client.get("/admin/fleet")
     assert page.status_code == 200
-    assert 'name="max_parallel" type="number" min="1" max="10"' in page.text
+    assert 'name="max_parallel" type="number" min="1" max="20"' in page.text
     csrf = re.search('name="csrf" value="([^"]+)"', page.text).group(1)
     response = client.post("/admin/fleet/pair", data={
         "csrf": csrf, "name": "Ten account browser", "platform": platform,

@@ -18,6 +18,7 @@ Parent work and acceptance: [project Tasks.md](../../Tasks.md).
   Parent task dependencies: `ORC-103`, `ORC-105`.
 - [ ] `ORC-CON-103` Record compatible consumer/build versions and regenerate exports whenever canonical models change.
   Parent task dependencies: `ORC-107`.
+  Progress 2026-11-03: `MAX_WORKER_PARALLEL` is 20 for accounts, `max_parallel` and heartbeat leases; lower paired worker limits remain valid.
 
 ## Update rule
 
@@ -26,3 +27,6 @@ Parent project tasks remain authoritative for cross-directory acceptance; do not
 close them solely because a local documentation item is complete. Record the
 actual verification scope and link dated evidence rather than copying historical
 test totals into this file. This planning update ran no application/provider tests.
+
+- [x] 2026-11-04 / `ORC-103`: Document positive relative claim pacing hints and
+  backward-compatible omission/ignore behavior.

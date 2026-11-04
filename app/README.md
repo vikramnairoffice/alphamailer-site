@@ -31,3 +31,7 @@ Android consumers. Do not hand-edit client generated files. Route/claim/campaign
 OAuth/Gradio tests are in [tests](../tests/). Disposable integration servers and
 benchmarks are in [tools](../tools/); use [current startup/evidence](../Implementation-Status.md)
 and [remaining operations tasks](../Tasks.md), including the single-process limit.
+
+2026-11-04: campaign_service.claim_pacing computes the latest applicable account
+deadline. fleet_service returns optional retry_after_ms on a paced empty claim.
+The boolean paced_claim helper and all assignment/lease semantics remain.

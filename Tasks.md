@@ -18,7 +18,7 @@ Checked items are bounded code/local evidence from
 ## Independent development
 
 Source reconciliation 2026-10-23: router/service/test-file review confirms durable
-campaigns, aggregate views, queued cancellation, the OAuth broker and ten-slot
+campaigns, aggregate views, queued cancellation, the OAuth broker and twenty-slot
 browser bounds. The [current status](Implementation-Status.md) distinguishes these
 implemented parts from the remaining acceptance of `ORC-103` through `ORC-107`.
 
@@ -91,3 +91,6 @@ implemented parts from the remaining acceptance of `ORC-103` through `ORC-107`.
 Update rule: retain stable IDs and existing user-authored scope/status/spec files.
 Add dated evidence when checking tasks; keep provider, cloud and production gates
 open until tested. No runtime edits or generated files belong in `../Alphamailer/`.
+
+2026-11-04 `ORC-103`: Pacing-blocked claims expose optional retry_after_ms;
+1-second/600-second boundaries and active-account exclusion are fixture-tested.

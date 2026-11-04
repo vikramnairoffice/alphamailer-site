@@ -4,7 +4,7 @@ Baseline: 2026-09-27. Owner: coordinator, fleet protocol and Gradio bridge.
 
 Source reconciliation: 2026-10-23 at `d465e72`. The
 [current source review](Implementation-Status.md) records implemented campaign,
-OAuth and ten-slot behavior separately from remaining mixed-client, artifact,
+OAuth and twenty-slot browser capacity separately from remaining mixed-client, artifact,
 final legacy mapping and operations acceptance. No new runtime tests ran here.
 
 ## Goal and baseline
@@ -77,3 +77,6 @@ Do not deploy with fixture credentials or validate migrations against a real
 production database. Record live Gradio/device/provider results separately from
 local fixture success. Update [Tasks.md](Tasks.md) and the status evidence after
 each bounded change, preserving existing user-authored planning files.
+
+2026-11-04 (`ORC-103`): Add canonical claim pacing hints consumed by Automation
+for deadline scheduling. Retain account exclusion, cross-campaign gaps and leases.
