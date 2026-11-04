@@ -9,6 +9,9 @@ final legacy mapping and operations acceptance. No new runtime tests ran here.
 
 ## Goal and baseline
 
+2026-11-04: extend browser consent to Drive/Docs comments and Calendar; verify
+offline handoff/refresh, then perform designated provider acceptance (`ORC-201`).
+
 Coordinate Colab/VM, Android and browser workers from one dashboard while reusing
 the original Gradio APIs. Registry compatibility, worker jobs, leases/recovery,
 Gradio sessions and shared dashboard integration exist. Durable fleet manifests,

@@ -35,7 +35,9 @@ AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 USER_URL = "https://openidconnect.googleapis.com/v1/userinfo"
 SCOPES = ["https://www.googleapis.com/auth/userinfo.email",
-          "https://www.googleapis.com/auth/gmail.compose"]
+          "https://www.googleapis.com/auth/gmail.compose",
+          "https://www.googleapis.com/auth/drive.file",
+          "https://www.googleapis.com/auth/calendar.events"]
 TTL = 600
 HEADERS = {"Cache-Control": "no-store", "Pragma": "no-cache",
            "Referrer-Policy": "no-referrer", "X-Content-Type-Options": "nosniff"}

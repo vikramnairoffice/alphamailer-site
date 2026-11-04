@@ -75,6 +75,9 @@ def test_browser_handoff_refresh_and_ack(client, phone, configured, provider, da
     assert params["access_type"] == ["offline"]
     assert params["prompt"] == ["consent select_account"]
     assert params["code_challenge_method"] == ["S256"]
+    expected_scopes = {"https://www.googleapis.com/auth/" + scope for scope in
+                       ("userinfo.email", "gmail.compose", "drive.file", "calendar.events")}
+    assert set(params["scope"][0].split()) == expected_scopes
     assert phone["worker_token"] not in attempt["authorization_url"]
     assert configured["client_secret"] not in json.dumps(attempt)
     assert poll(client, phone, attempt).json()["status"] == "pending"
@@ -91,6 +94,7 @@ def test_browser_handoff_refresh_and_ack(client, phone, configured, provider, da
     account = result.json()["account"]
     assert account["email"] == "sender@example.test"
     assert "client_secret" not in account["oauth"]
+    assert set(account["oauth"]["scopes"]) == expected_scopes
     # Retry before acknowledgement returns the same account, even from a new DB session.
     assert poll(client, phone, attempt).json()["account"] == account
     with database() as db:
@@ -103,6 +107,7 @@ def test_browser_handoff_refresh_and_ack(client, phone, configured, provider, da
         "receipt": account["oauth"]["alphamailer_broker"]["receipt"]})
     assert refreshed.status_code == 200, refreshed.text
     assert refreshed.json()["access_token"] == "rotated-access"
+    assert set(refreshed.json()["scope"].split()) == expected_scopes
     assert "client_secret" not in refreshed.text
     for _ in range(2):
         assert client.post("/api/v1/worker/google/ack", headers=phone["headers"], json=session(attempt)).status_code == 200
@@ -110,6 +115,23 @@ def test_browser_handoff_refresh_and_ack(client, phone, configured, provider, da
     with database() as db:
         row = db.get(oauth.GoogleAuthorization, attempt["session_id"])
         assert row.result is None and row.context is None
+
+
+def test_existing_gmail_only_account_refresh_does_not_add_permissions(client, phone, configured, provider, monkeypatch):
+    # A receipt issued before the scope expansion must remain valid and must not
+    # claim new Google permissions merely because server defaults changed.
+    with monkeypatch.context() as old_server:
+        old_server.setattr(oauth, "SCOPES", ["https://www.googleapis.com/auth/userinfo.email",
+                                           "https://www.googleapis.com/auth/gmail.compose"])
+        attempt = start(client, phone)
+        callback(client, attempt)
+        account = poll(client, phone, attempt).json()["account"]
+    refreshed = client.post("/api/v1/worker/google/refresh", headers=phone["headers"], json={
+        "refresh_token": account["oauth"]["refresh_token"],
+        "receipt": account["oauth"]["alphamailer_broker"]["receipt"]})
+    assert refreshed.status_code == 200
+    assert set(refreshed.json()["scope"].split()) == set(account["oauth"]["scopes"])
+    assert "https://www.googleapis.com/auth/drive.file" not in refreshed.json()["scope"].split()
 
 
 def test_unauthorized_scope_and_expiry(client, phone, configured, paired, database):
@@ -129,12 +151,16 @@ def test_unauthorized_scope_and_expiry(client, phone, configured, paired, databa
         assert db.get(oauth.GoogleAuthorization, attempt["session_id"]) is None
 
 
-@pytest.mark.parametrize("fault", ["wrong_email", "unverified", "no_refresh", "missing_scope", "denied"])
+@pytest.mark.parametrize("fault", ["wrong_email", "unverified", "no_refresh", "missing_scope",
+                                 "missing_drive", "missing_calendar", "denied"])
 def test_no_handoff_for_failed_consent(client, phone, configured, monkeypatch, fault):
     async def provider(method, url, **kwargs):
         if url == oauth.TOKEN_URL:
+            scopes = [scope for scope in oauth.SCOPES if not (
+                (fault == "missing_drive" and scope.endswith("/drive.file")) or
+                (fault == "missing_calendar" and scope.endswith("/calendar.events")))]
             return {"access_token": "access", "refresh_token": "" if fault == "no_refresh" else "refresh",
-                    "scope": "" if fault == "missing_scope" else " ".join(oauth.SCOPES)}
+                    "scope": "" if fault == "missing_scope" else " ".join(scopes)}
         return {"email": "other@example.test" if fault == "wrong_email" else "sender@example.test",
                 "email_verified": fault != "unverified"}
     monkeypatch.setattr(oauth, "google_request", provider)

@@ -1,5 +1,23 @@
 # Orchestrator implementation status
 
+## Browser Drive and Calendar scopes - 2026-11-04
+
+Browser authorization now requests `drive.file` and `calendar.events` alongside
+email identity and `gmail.compose`. The existing callback requires all requested
+scopes and carries them into the device handoff and encrypted refresh receipt.
+Drive sharing and Docs comments use app-created files; broader Drive access is
+not requested. Existing Gmail-only receipts retain their original permissions
+and remain refreshable; reconnect to grant the added scopes. Deployment/API
+enablement and reconnect steps are in [Google browser authorization](Google-Browser-Auth.md).
+
+Verification: project-local `python -m pytest tests -q` passed **59 tests**, with
+**1 optional live Gradio fixture skipped**; existing dependency deprecation
+warnings remain. Tests cover both added scopes in authorization/handoff/refresh,
+individual missing-permission rejection, and old Gmail-only refresh compatibility.
+Android verification is recorded in its [status](../Alphamailer-Android/Implementation-Status.md).
+No deployment, live consent, Google workflow operation, speed benchmark or device
+test was performed. The protected original mailer worktree remains unchanged.
+
 ## Current source review - 2026-10-23
 
 Source revision `d465e72` contains the registry, scoped fleet/job API, durable

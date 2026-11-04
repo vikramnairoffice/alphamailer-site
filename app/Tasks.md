@@ -12,6 +12,11 @@ Parent work and acceptance: [project Tasks.md](../Tasks.md).
 
 ## Remaining work
 
+- [x] `ORC-APP-106` Expand browser OAuth to `drive.file` and `calendar.events`
+  (2026-11-04). Offline consent/handoff/refresh coverage passes; setup and
+  reconnect guidance is in [Google browser authorization](../Google-Browser-Auth.md).
+  Parent live acceptance remains `ORC-201` / Android `AND-103`.
+
 - [ ] `ORC-APP-101` Complete acknowledged in-flight stop/control reporting and real mixed-client failure recovery.
   Parent task dependencies: `ORC-103`, `ORC-105`.
 - [ ] `ORC-APP-102` Map final Gradio defaults, hidden/stateful callbacks, uploads and errors.

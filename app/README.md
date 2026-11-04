@@ -16,7 +16,7 @@ Execution: [Plan.md](Plan.md) · [Tasks.md](Tasks.md).
 | Campaign submission, assignments, aggregate state and queued cancellation | [campaign_service.py](campaign_service.py) |
 | Public/operator/worker fleet route authentication | [fleet_routes.py](fleet_routes.py) |
 | Legacy Gradio discovery and invocation handles | [gradio_adapter.py](gradio_adapter.py), [gradio_bridge.py](gradio_bridge.py) |
-| Android Google OAuth broker and refresh | [google_oauth.py](google_oauth.py), [setup guide](../Google-Browser-Auth.md) |
+| Android Gmail/Drive/Calendar OAuth broker and refresh | [google_oauth.py](google_oauth.py), [scopes and reconnect setup](../Google-Browser-Auth.md) |
 | Admin rendering | [templates](templates/), [static assets](static/) |
 
 The native [Automation Campaigns screen](../../Alphamailer-automation/docs/Operations.md#campaign-import-and-cancellation)

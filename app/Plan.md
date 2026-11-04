@@ -13,6 +13,10 @@ Creating or updating this plan does not rerun application tests.
 
 ## Work sequence
 
+Browser OAuth update 2026-11-04: request Drive file and Calendar event access
+alongside Gmail, verify partial consent and refresh compatibility, then complete
+live consent/provider acceptance under `ORC-201` and Android `AND-103`.
+
 1. Finish mixed-worker progress/control acknowledgement and disconnect/restart fixtures (`ORC-103`, `ORC-105`).
 2. Reconcile the final legacy Gradio callback/settings surface and client contract consumers (`ORC-104`, `ORC-107`).
 3. Complete artifact retention/recovery and verify the intended database/single-process deployment topology (`ORC-106`, `ORC-301`, `ORC-302`).

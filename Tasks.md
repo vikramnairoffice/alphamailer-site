@@ -76,6 +76,9 @@ implemented parts from the remaining acceptance of `ORC-103` through `ORC-107`.
 - [ ] `ORC-201` Verify actual Colab Gradio instances, physical Android and live
   Gmail workers under dashboard control after designated resources arrive.
   Record each platform's outcomes; local Gradio fixtures are not cloud proof.
+  Progress 2026-11-04: browser OAuth now requests Drive file and Calendar event
+  access alongside Gmail. Offline scope/refresh tests pass; real consent and
+  Drive/Docs/Calendar operations remain unverified. See [setup](Google-Browser-Auth.md).
 
 ## Operations and release
 

@@ -1,6 +1,7 @@
 # Google browser authorization for Android
 
-Android can connect a Gmail account in an external browser and receive the result
+Android can connect a Google account for Gmail, Drive/Docs comments and Calendar
+in an external browser and receive the result
 automatically. This flow never calls Android AccountManager or adds a system Google
 account. Google may retain a browser sign-in session; that is separate from Android
 system accounts. The app never collects the Google password.
@@ -8,7 +9,8 @@ system accounts. The app never collects the Google password.
 ## Coordinator setup
 
 1. Create a **Web application** OAuth client in your Google Cloud project. Enable
-   Gmail API and configure its consent screen and authorized test users as needed.
+   Gmail API, Google Drive API and Google Calendar API. Configure its consent
+   screen with the scopes below and authorized test users as needed.
 2. Register the exact redirect URI
    `https://YOUR-COORDINATOR/oauth/google/callback` in that client.
 3. Download the client JSON and keep it outside the repository and web/static
@@ -44,9 +46,19 @@ flow deliberately has no HTTP, out-of-band, or mobile loopback fallback.
 
 ## Behavior and boundaries
 
-- The initial permission set is email identity plus `gmail.compose` (drafts and
-  sending). Drive, Calendar, Forms, and mailbox-reading features need their own
-  additional scopes; this button does not request them silently.
+- Browser consent requests email identity, `gmail.compose` (drafts and sending),
+  `drive.file` (create/share files and add Docs comments on app-created or
+  explicitly authorized files), and `calendar.events` (events and invitations
+  on calendars the account can access). Current Docs workflows use the Drive
+  comments API; they do not require a separate Docs API scope. This does not
+  grant access to every existing Drive file, calendar administration, Forms
+  creation, or mailbox reading.
+- Existing Gmail-only tokens are not upgraded by refresh. After deploying the
+  updated coordinator, use **Connect Google in browser** again with the same
+  account and approve all requested permissions. The stable account ID replaces
+  the saved credentials. New consent missing either Drive or Calendar permission
+  fails without importing a partially authorized account. Older Gmail-only
+  accounts can still refresh with their original permissions until reconnected.
 - Google is requested to provide offline access, with consent and account
   selection. Missing refresh tokens, incomplete permissions, unverified email,
   or a different email cause the attempt to fail without importing an account.
