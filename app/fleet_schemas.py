@@ -199,7 +199,7 @@ class CampaignCreate(StrictModel):
     protocol_version: Literal[1] = 1
     idempotency_key: str = Field(min_length=8, max_length=120)
     min_interval_seconds: int = Field(default=0, ge=0, le=3600)
-    assignments: list[CampaignItem] = Field(min_length=1, max_length=500)
+    assignments: list[CampaignItem] = Field(min_length=1)
     confirmation: str | None = None
 
     @model_validator(mode="after")
@@ -209,9 +209,6 @@ class CampaignCreate(StrictModel):
             raise ValueError("Each lead_id must appear once in a campaign")
         if any(item.execution == "send" for item in self.assignments) and self.confirmation != "SEND":
             raise ValueError("Sending requires explicit SEND confirmation")
-        import json
-        if len(json.dumps(self.model_dump())) > 2_000_000:
-            raise ValueError("Campaign manifest exceeds 2 MB")
         return self
 
 

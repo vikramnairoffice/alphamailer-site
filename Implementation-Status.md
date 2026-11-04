@@ -175,3 +175,22 @@ tests. Live twenty-account routing, recipient receipt and total subsecond Gmail
 completion remain open. See the Automation implementation status for the
 separate PDF sender-side evidence and post-extension-reload account readiness.
 
+
+## Campaign count and aggregate-size limit removal - 2026-11-04
+
+CampaignCreate now requires at least one assignment without a fixed maximum
+assignment count or aggregate manifest-byte cap. Individual message/attachment
+validation, send confirmation, account ownership, pacing and identity fencing
+remain unchanged. Historical lead lookup uses bounded SQL parameter chunks, and
+standalone ownership is checked once per account instead of once per lead.
+Canonical schemas and Automation browser types/validators were regenerated.
+
+Verification: all 60 coordinator tests passed, with one optional Gradio fixture
+skipped and existing deprecation warnings. The new 601-assignment, >2 MB fixture
+proved durable admission, identical-request reuse, complete queued cancellation
+and historical identity rejection in a later SQL chunk. Automation additionally
+proved real local Gradio upload/submission/download with the updated contract;
+see its dated Implementation-Status.md. tools/fixture_server.py has an opt-in
+--admit-send-fixtures flag for isolated send-shaped API tests without live workers;
+its default remains delivery-disabled. No provider, production database,
+deployment or release was used. Memory/time still scale with campaign size.

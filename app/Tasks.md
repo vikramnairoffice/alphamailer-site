@@ -40,3 +40,8 @@ test totals into this file. This planning update ran no application/provider tes
 
 - [x] 2026-11-04 / `ORC-103`: Add retry_after_ms for pacing-blocked empty claims;
   preserve cross-campaign account pacing and active-job exclusion.
+
+- [x] `ORC-APP-107` / parent `ORC-107`: Remove fixed campaign-wide bounds, chunk
+  historical identity queries and validate standalone ownership once per account
+  (2026-11-04). Large-campaign durable/idempotent admission and cancellation pass
+  offline; broader consumer agreement remains under the parent task.

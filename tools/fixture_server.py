@@ -5,10 +5,11 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument("--database", required=True)
 parser.add_argument("--port", required=True, type=int)
+parser.add_argument("--admit-send-fixtures", action="store_true", help="Allow reviewed send payloads in the isolated test database; connect no live workers.")
 args = parser.parse_args()
 os.environ["DATABASE_URL"] = "sqlite:///" + args.database.replace("\\", "/")
 os.environ["SESSION_SECRET"] = "isolated-browser-fixture-session"
-os.environ["ENABLE_BROWSER_SEND"] = "false"
+os.environ["ENABLE_BROWSER_SEND"] = "true" if args.admit_send_fixtures else "false"
 if not os.environ.get("API_TOKEN"):
     raise RuntimeError("Integration fixture requires a test-only API_TOKEN")
 

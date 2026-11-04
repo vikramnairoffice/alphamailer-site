@@ -60,10 +60,12 @@ def submit(db: Session, body: CampaignCreate, send_enabled=False):
         fleet.reject("Worker delivery is disabled on this coordinator", 403)
     # Read the assignment journal as well as relying on the new identity key:
     # a database created before the identity table can contain older campaigns.
-    used_lead = db.scalar(select(CampaignAssignment.lead_id).where(
-        CampaignAssignment.lead_id.in_([item.lead_id for item in body.assignments])).limit(1))
-    if used_lead is not None:
-        fleet.reject("Lead ID already belongs to another campaign; use a new ID for an intentional rerun")
+    # Bound SQL parameter counts without limiting the campaign's total size.
+    for offset in range(0, len(body.assignments), 400):
+        used_lead = db.scalar(select(CampaignAssignment.lead_id).where(
+            CampaignAssignment.lead_id.in_([item.lead_id for item in body.assignments[offset:offset + 400]])).limit(1))
+        if used_lead is not None:
+            fleet.reject("Lead ID already belongs to another campaign; use a new ID for an intentional rerun")
 
     workers = {}
     for identity in sorted({item.worker_id for item in body.assignments}):
@@ -76,8 +78,9 @@ def submit(db: Session, body: CampaignCreate, send_enabled=False):
         previous = account_owner.setdefault(item.account_email, item.worker_id)
         if previous != item.worker_id:
             fleet.reject("One campaign account must belong to one worker", 422)
+    for account, worker_id in account_owner.items():
         standalone_jobs = db.scalars(select(Job).where(
-            Job.worker_id == item.worker_id, Job.account_email == item.account_email,
+            Job.worker_id == worker_id, Job.account_email == account,
             Job.operation == "engine.command", Job.state.in_(("queued", *fleet.ACTIVE_STATES)))).all()
         if any((job.payload.get("engine") or {}).get("command") == "campaign.start"
                for job in standalone_jobs):

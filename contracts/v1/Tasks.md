@@ -30,3 +30,9 @@ test totals into this file. This planning update ran no application/provider tes
 
 - [x] 2026-11-04 / `ORC-103`: Document positive relative claim pacing hints and
   backward-compatible omission/ignore behavior.
+
+2026-11-04 progress (`ORC-CON-101`, `ORC-CON-103`, parent `ORC-107`): Canonical
+CampaignCreate and regenerated browser schema/types/validator accept campaigns
+above the previous 500-row and 2 MB limits. Existing individual message limits
+and protocol version remain. Offline API/extension checks pass; broader Android
+and mixed-worker acceptance is not closed by this relaxation.

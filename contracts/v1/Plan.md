@@ -28,3 +28,7 @@ planning pair inherit this directory's scope.
 
 2026-11-04 (`ORC-103`): Document additive claim retry_after_ms response guidance
 without introducing a new request operation or changing version-1 request models.
+
+2026-11-04 (`ORC-107`): Regenerate CampaignCreate without maxItems; rebuild browser
+schemas/types/validators and verify a campaign above the prior row/byte caps.
+Keep protocol version 1 and existing individual message/attachment limits.

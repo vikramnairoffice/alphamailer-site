@@ -61,7 +61,10 @@ Timestamps are UTC. Heartbeat responses list only successfully renewed leases.
 
 ## Fleet campaign ownership
 
-Submit up to 500 assignments with globally stable lead IDs. A lead ID is reserved
+Submit one or more assignments with globally stable lead IDs. There is no fixed
+campaign assignment-count or aggregate manifest-size cap; individual message and
+attachment limits still apply. Admission remains transactional and uses server
+memory/time proportional to campaign size. A lead ID is reserved
 across campaign history, including after cancellation; an intentional rerun needs
 a new lead ID and campaign key. Existing assignment journals are checked when an
 older database did not yet have the lead-identity table. The coordinator derives stable

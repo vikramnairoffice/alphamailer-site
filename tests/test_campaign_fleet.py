@@ -1,4 +1,5 @@
 import datetime as dt
+import json
 import pytest
 
 from sqlalchemy import select
@@ -31,6 +32,28 @@ def manifest(first, second, *, interval=0):
                 {"lead_id": "lead-3", "worker_id": second["id"],
                  "account_email": "second@example.com", "operation": "gmail.compose",
                  "message": {"to": ["recipient3@example.com"], "subject": "Three", "body": "Frozen three"}}]}
+
+
+def test_campaign_above_previous_count_and_byte_caps_is_durable_idempotent_and_cancellable(client, operator, paired, database):
+    body = {'idempotency_key': 'large-campaign-fixture', 'assignments': [
+        {'lead_id': f'large-{i}', 'worker_id': paired['id'], 'account_email': 'account0@example.com',
+         'operation': 'gmail.compose', 'message': {'to': [f'recipient{i}@example.com'], 'subject': 'Large fixture', 'body': 'B' * 3500}}
+        for i in range(601)]}
+    assert len(json.dumps(body)) > 2_000_000
+    response = client.post('/api/v1/campaigns', headers=operator, json=body)
+    assert response.status_code == 201, response.text
+    campaign = response.json()
+    assert campaign['total'] == campaign['counts']['queued'] == 601
+    assert client.post('/api/v1/campaigns', headers=operator, json=body).json()['id'] == campaign['id']
+    with database() as restarted:
+        assert len(restarted.scalars(select(CampaignAssignment)).all()) == 601
+    cancelled = client.post(f"/api/v1/campaigns/{campaign['id']}/cancel", headers=operator).json()
+    assert cancelled['counts']['cancelled'] == 601
+    # A historical identity in a later SQL chunk must still block reuse.
+    body['idempotency_key'] = 'large-campaign-reuse'
+    for item in body['assignments'][:500]:
+        item['lead_id'] = 'new-' + item['lead_id']
+    assert client.post('/api/v1/campaigns', headers=operator, json=body).status_code == 409
 
 
 def test_manifest_is_durable_unique_and_aggregate_is_report_driven(client, operator, paired, database):

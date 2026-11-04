@@ -35,3 +35,9 @@ and [remaining operations tasks](../Tasks.md), including the single-process limi
 2026-11-04: campaign_service.claim_pacing computes the latest applicable account
 deadline. fleet_service returns optional retry_after_ms on a paced empty claim.
 The boolean paced_claim helper and all assignment/lease semantics remain.
+
+Campaign admission has no fixed assignment-count or aggregate manifest-byte cap.
+`campaign_service.py` checks historical lead identity in bounded SQL chunks and
+validates standalone ownership once per account. See the
+[canonical campaign contract](../contracts/v1/README.md#fleet-campaign-ownership) and dated
+[verification](../Implementation-Status.md). Individual message checks remain.

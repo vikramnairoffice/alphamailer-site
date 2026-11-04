@@ -213,7 +213,6 @@
       "items": {
         "$ref": "#/$defs/CampaignItem"
       },
-      "maxItems": 500,
       "minItems": 1,
       "title": "Assignments",
       "type": "array"

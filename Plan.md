@@ -83,3 +83,8 @@ each bounded change, preserving existing user-authored planning files.
 
 2026-11-04 (`ORC-103`): Add canonical claim pacing hints consumed by Automation
 for deadline scheduling. Retain account exclusion, cross-campaign gaps and leases.
+
+2026-11-04 (`ORC-107`, Automation `WEB-124`): Remove the fixed campaign assignment
+count and aggregate manifest-size limits, regenerate canonical/browser schemas,
+and verify large atomic admission, idempotency and cancellation. Chunk historical
+lead lookup to respect database parameter limits without capping campaign size.

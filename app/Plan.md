@@ -32,3 +32,7 @@ planning pair inherit this directory's scope.
 
 2026-11-04 (`ORC-103`): Publish additive relative pacing hints from the canonical
 claim path so browser workers can schedule the next eligible check precisely.
+
+2026-11-04 (`ORC-107`, Automation `WEB-124`): Relax only campaign-wide bounds;
+retain individual message checks, send confirmation, account ownership and pacing.
+Bound historical identity SQL queries and avoid repeated per-account validation.

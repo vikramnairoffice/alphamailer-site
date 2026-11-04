@@ -97,3 +97,10 @@ open until tested. No runtime edits or generated files belong in `../Alphamailer
 
 2026-11-04 `ORC-103`: Pacing-blocked claims expose optional retry_after_ms;
 1-second/600-second boundaries and active-account exclusion are fixture-tested.
+
+2026-11-04 progress (`ORC-107`, Automation `WEB-124`): Removed fixed campaign
+assignment-count/aggregate-byte caps, regenerated canonical/browser schema,
+chunked historical lead lookup and retained atomic admission, idempotency,
+account ownership and pacing. The full offline suite passed 60 tests with one
+optional Gradio fixture skipped; real disposable Gradio submission was verified
+in Automation. Broader all-client/mixed-worker acceptance remains open.
