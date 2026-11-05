@@ -161,7 +161,7 @@ def check_csrf(request, token):
 
 
 def render(request, user, db, paired=None, error=None, code=200):
-    response = templates.TemplateResponse("fleet.html", {
+    response = templates.TemplateResponse(request, "fleet.html", {
         "request": request, "user": user, "csrf": csrf_token(request), "paired": paired,
         "error": error, "workers": workers(db), "jobs": service.jobs(db),
         "campaigns": [campaign_service.view(db, row.id) for row in db.scalars(

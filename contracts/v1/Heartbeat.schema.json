@@ -29,9 +29,6 @@
     "protocol_version": {
       "const": 1,
       "default": 1,
-      "enum": [
-        1
-      ],
       "title": "Protocol Version",
       "type": "integer"
     },

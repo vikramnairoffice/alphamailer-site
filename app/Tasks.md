@@ -45,3 +45,18 @@ test totals into this file. This planning update ran no application/provider tes
   historical identity queries and validate standalone ownership once per account
   (2026-11-04). Large-campaign durable/idempotent admission and cancellation pass
   offline; broader consumer agreement remains under the parent task.
+
+## Maintenance audit ? 2026-11-05
+
+Removed five unused imports while preserving registration side effects and all route/schema contracts. Offline suite: 60 passed, 1 skipped.
+See the [suite YAGNI audit](<../Maintenance-2026-11-05.md>) for scope, checks and retained findings.
+Existing feature and release milestones retain their current status.
+
+
+## Dependency maintenance - 2026-11-05
+
+Framework and dependency manifests were upgraded to current stable versions,
+with documented native-package compatibility limits. See the
+[suite upgrade record](<../Maintenance-2026-11-05.md>) for versions, migration changes,
+validation results and compatibility exceptions. Existing feature and release
+acceptance milestones retain their current status.

@@ -194,3 +194,18 @@ see its dated Implementation-Status.md. tools/fixture_server.py has an opt-in
 --admit-send-fixtures flag for isolated send-shaped API tests without live workers;
 its default remains delivery-disabled. No provider, production database,
 deployment or release was used. Memory/time still scale with campaign size.
+
+## Maintenance audit ? 2026-11-05
+
+Removed five unused imports while preserving registration side effects and all route/schema contracts. Offline suite: 60 passed, 1 skipped.
+See the [suite YAGNI audit](<Maintenance-2026-11-05.md>) for scope, checks and retained findings.
+Existing feature and release milestones retain their current status.
+
+
+## Dependency maintenance - 2026-11-05
+
+Framework and dependency manifests were upgraded to current stable versions,
+with documented native-package compatibility limits. See the
+[suite upgrade record](<Maintenance-2026-11-05.md>) for versions, migration changes,
+validation results and compatibility exceptions. Existing feature and release
+acceptance milestones retain their current status.

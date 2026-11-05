@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime as dt
 import time
 import secrets
 from typing import Optional
@@ -8,7 +7,7 @@ from typing import Optional
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from itsdangerous import BadSignature, URLSafeSerializer
-from passlib.context import CryptContext
+import bcrypt
 from sqlalchemy.orm import Session
 
 from .config import get_settings
@@ -16,16 +15,16 @@ from .database import get_db
 from . import models
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 http_bearer = HTTPBearer(auto_error=False)
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    # Preserve the UTF-8/72-byte convention used by existing Passlib hashes.
+    return bcrypt.hashpw(password.encode("utf-8")[:72], bcrypt.gensalt()).decode("ascii")
 
 
 def verify_password(password: str, hashed: str) -> bool:
-    return pwd_context.verify(password, hashed)
+    return bcrypt.checkpw(password.encode("utf-8")[:72], hashed.encode("ascii"))
 
 
 def _get_serializer() -> URLSafeSerializer:

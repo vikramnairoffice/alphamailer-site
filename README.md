@@ -101,3 +101,12 @@ and [tasks](Tasks.md) for remaining legacy mapping, mixed-client recovery,
 artifact persistence and operations. Run one coordinator process for the current
 process-local Gradio bridge. Deployment is a separate requested operation;
 historical Render notes do not establish a tested production release.
+
+
+## Dependency maintenance - 2026-11-05
+
+Framework and dependency manifests were upgraded to current stable versions,
+with documented native-package compatibility limits. See the
+[suite upgrade record](<Maintenance-2026-11-05.md>) for versions, migration changes,
+validation results and compatibility exceptions. Existing feature and release
+acceptance milestones retain their current status.

@@ -1,2 +1,2 @@
 -r requirements.txt
-gradio_client==2.6.0
+gradio_client==2.7.2

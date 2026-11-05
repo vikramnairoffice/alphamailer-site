@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
@@ -11,17 +12,17 @@ from .api_routes import router as api_router
 from .fleet_routes import router as fleet_router, ui_router as fleet_ui_router
 from .gradio_bridge import router as gradio_router, Bridge
 from .google_oauth import router as google_oauth_router
-from .config import get_settings
 from .database import Base, engine
 
 
 def create_app() -> FastAPI:
-    app = FastAPI(title="URL Registry Admin")
-    app.state.gradio_bridge = Bridge()
-
-    @app.on_event("startup")
-    async def on_startup():  # pragma: no cover
+    @asynccontextmanager
+    async def lifespan(app):
         Base.metadata.create_all(bind=engine)
+        yield
+
+    app = FastAPI(title="URL Registry Admin", lifespan=lifespan)
+    app.state.gradio_bridge = Bridge()
 
     @app.get("/")
     async def root():  # pragma: no cover

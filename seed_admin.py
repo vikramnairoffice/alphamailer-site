@@ -1,5 +1,4 @@
 import argparse
-import sys
 
 from app import auth, models
 from app.database import Base, engine, session_scope

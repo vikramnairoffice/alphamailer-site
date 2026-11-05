@@ -104,3 +104,12 @@ chunked historical lead lookup and retained atomic admission, idempotency,
 account ownership and pacing. The full offline suite passed 60 tests with one
 optional Gradio fixture skipped; real disposable Gradio submission was verified
 in Automation. Broader all-client/mixed-worker acceptance remains open.
+
+
+## Dependency maintenance - 2026-11-05
+
+Framework and dependency manifests were upgraded to current stable versions,
+with documented native-package compatibility limits. See the
+[suite upgrade record](<Maintenance-2026-11-05.md>) for versions, migration changes,
+validation results and compatibility exceptions. Existing feature and release
+acceptance milestones retain their current status.

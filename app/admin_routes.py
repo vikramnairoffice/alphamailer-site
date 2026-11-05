@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import datetime as dt
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, Response, status
 from fastapi.responses import RedirectResponse
@@ -21,7 +21,7 @@ templates = Jinja2Templates(directory=Path(__file__).parent / "templates")
 
 @router.get("/login")
 async def login_form(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse(request, "login.html", {"request": request})
 
 
 @router.post("/login")
@@ -29,7 +29,7 @@ async def login(request: Request, response: Response, email: str = Form(...), pa
     stmt = select(models.User).where(models.User.email == email.lower())
     user = db.execute(stmt).scalar_one_or_none()
     if not user or not auth.verify_password(password, user.hashed_password):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Invalid credentials"}, status_code=status.HTTP_401_UNAUTHORIZED)
+        return templates.TemplateResponse(request, "login.html", {"request": request, "error": "Invalid credentials"}, status_code=status.HTTP_401_UNAUTHORIZED)
     token = auth.create_session_token(user.id)
     settings = get_settings()
     resp = RedirectResponse(url="/admin/", status_code=status.HTTP_302_FOUND)
@@ -102,6 +102,7 @@ async def dashboard(request: Request, user: models.User = Depends(auth.require_l
     instances = [_serialize_instance(row, active_cutoff) for row in active_rows]
     active_count = len(instances)
     return templates.TemplateResponse(
+        request,
         "dashboard.html",
         {
             "request": request,
@@ -118,6 +119,7 @@ async def users_page(request: Request, user: models.User = Depends(auth.require_
     stmt = select(models.User).order_by(models.User.created_at.desc())
     users = db.execute(stmt).scalars().all()
     return templates.TemplateResponse(
+        request,
         "users.html",
         {
             "request": request,
@@ -143,6 +145,7 @@ async def create_user(
     existing = db.execute(select(models.User).where(models.User.email == email_clean)).scalar_one_or_none()
     if existing:
         return templates.TemplateResponse(
+            request,
             "users.html",
             {
                 "request": request,
