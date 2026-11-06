@@ -1,8 +1,15 @@
 # Alphamailer Orchestrator architecture
 
+
+## Consolidated sections
+
+- [URL-registry specification](#registry-specification)
+
+These sections now live in this document. Task IDs, unresolved requirements and dated evidence retain their original meaning. This documents-only consolidation on 2026-11-06 ran no application, provider or device tests.
+
 Status: implemented fleet, Gradio connector and shared Flutter dashboard. Read
-`Implementation-Status.md` for current evidence and remaining gates, `Scope.md`
-for delivery boundaries, and `Agent.md` for implementation rules. The engine is
+`Tasks.md#implementation-status` for current evidence and remaining gates, `Plan.md#scope`
+for delivery boundaries, and `AGENTS.md#implementation-instructions` for implementation rules. The engine is
 packaged read-only from the original source and integrated into Android.
 
 ## Suite relationship
@@ -27,8 +34,8 @@ The existing `../Alphamailer/` remains unchanged during this independent phase.
 
 ## Concrete coordinator components
 
-Use the [application source map](app/README.md) for exact module ownership and
-the [protocol guide](contracts/v1/README.md) for canonical request models/routes.
+Use the [application source map](README.md#component-app) for exact module ownership and
+the [protocol guide](README.md#component-contracts-v1) for canonical request models/routes.
 The native [Automation Campaigns UI](../Alphamailer-automation/docs/Operations.md#campaign-import-and-cancellation)
 calls existing operator endpoints; it does not introduce a separate job protocol.
 
@@ -158,3 +165,95 @@ checks, stale sessions, lease expiry, duplicate requests/reports, persistence ac
 new sessions/application restarts, dashboard behavior, and both client contracts.
 Local fake workers establish protocol correctness only. Real Gmail and Android
 execution require their own separately reported evidence.
+
+
+<a id="registry-specification"></a>
+## URL-registry specification
+
+Historical registry specification. The current project lives in app/, not the earlier web_admin split. Registry fields/payloads are retained as compatibility context; setup and fleet behavior use the current sections above.
+
+<a id="registry-specification-technical-specs"></a>
+
+<a id="registry-specification-components"></a>
+### Components
+- Mailer (Gradio UI, Python): `ui.py`, `url_publisher.py`, others.
+- Registry site (FastAPI): lives under `web_admin/` (separate repo when hosted). Uses SQLAlchemy + Postgres.
+
+<a id="registry-specification-data-model-registry"></a>
+### Data model (registry)
+- instances
+  - id: string (UUID from mailer run)
+  - public_url: string (nullable)
+  - local_url: string
+  - session_name: string (nullable)
+  - host: string (nullable)
+  - started_at: datetime (tz‑aware)
+  - last_seen: datetime (tz‑aware)
+  - created_at: datetime (server default)
+- users
+  - email: unique
+  - hashed_password: bcrypt
+  - is_admin: bool
+  - created_at
+
+<a id="registry-specification-api-registry"></a>
+### API (registry)
+- POST `/api/instances` (Bearer token)
+  - Body:
+    - id, public_url, local_url, session_name, host, started_at (ISO8601)
+  - Upserts record and sets `last_seen=now()`.
+  - 200 {"status":"ok"} on success.
+- GET `/api/instances?status=active`
+  - Returns `{ items: [...] }` with computed `status` and formatted timestamps.
+  - UI only shows “active” (last_seen within ACTIVE_MINUTES).
+
+<a id="registry-specification-auth"></a>
+### Auth
+- Webhook: `Authorization: Bearer <API_TOKEN>`
+- Admin UI: cookie session with `SESSION_SECRET`.
+
+<a id="registry-specification-mailer--registry-payload"></a>
+### Mailer → Registry payload
+```
+{
+  "id": "<uuid>",
+  "public_url": "https://....gradio.live",
+  "local_url": "http://127.0.0.1:<port>/",
+  "session_name": "<optional>",
+  "host": "<hostname>",
+  "started_at": "<ISO8601>"
+}
+```
+
+<a id="registry-specification-env-vars"></a>
+### Env vars
+- Mailer side
+  - `GRADIO_SHARE` (1/0): share a public link (default: ON in code today)
+  - `URL_PUBLISH_ENABLED` (1/0): publish URL over webhook (default: ON in code today)
+  - `URL_PUBLISH_WEBHOOK`: registry endpoint, e.g., `https://<service>.onrender.com/api/instances`
+  - `URL_PUBLISH_AUTH`: `Bearer <API_TOKEN>`
+  - Optional: `URL_PUBLISH_SLACK_WEBHOOK`, `URL_PUBLISH_FILE_PATH`, `URL_PUBLISH_STDOUT=1`
+- Registry site
+  - `DATABASE_URL`: Postgres URL (accepts postgres://, normalized to postgresql://)
+  - `API_TOKEN`: required for webhook auth
+  - `SESSION_SECRET`: required for admin sessions
+  - `ACTIVE_MINUTES`: status window (default 15)
+
+<a id="registry-specification-deployment-registry"></a>
+### Deployment (registry)
+- Target: Render free web service + free Postgres.
+- Blueprint: `render.yaml` in the website repo (web_admin when split out).
+- Build: `pip install -r requirements.txt`
+- Start: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+- Post‑deploy: `python seed_admin.py --email ... --password ...`
+
+<a id="registry-specification-styling-registry"></a>
+### Styling (registry)
+- Minimal CSS in `app/static/site.css` with better contrast, sticky header, badges, zebra rows.
+
+<a id="registry-specification-known-tradeoffs--todos"></a>
+### Known tradeoffs / TODOs
+- Live presence uses a time window; heartbeat optional for true real‑time.
+- No rate limiting on the webhook (could add basic throttling by IP/token).
+- No audit log yet; can be a simple table (`events`) if needed.
+- Mailer defaults to share/publish ON in code; can be toggled with envs.
