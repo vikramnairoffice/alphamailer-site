@@ -1,5 +1,7 @@
 # Google browser authorization for Android
 
+Source/configuration review: 2026-11-07 against [google_oauth.py](app/google_oauth.py) and [worker request models](app/fleet_schemas.py). This broker's `gmail.compose`, `drive.file` and `calendar.events` permissions differ from API Auth Validator's full Gmail/Drive/Calendar selections. Existing test results below remain dated; no new live consent or token renewal was performed.
+
 Android can connect a Google account for Gmail, Drive/Docs comments and Calendar
 in an external browser and receive the result
 automatically. This flow never calls Android AccountManager or adds a system Google

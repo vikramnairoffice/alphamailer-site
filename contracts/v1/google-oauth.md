@@ -1,5 +1,7 @@
 # Google browser authorization extension (version 1)
 
+Contract review: 2026-11-07 against [google_oauth.py](../../app/google_oauth.py) and [fleet_schemas.py](../../app/fleet_schemas.py). The route/response shapes below match those sources. `scope` in refresh responses is a space-separated string; ready-account `scopes` is a list. Live consent/renewal remains separately accepted.
+
 All `/api/v1/worker/google/*` routes use the existing per-worker bearer credential,
 and only Android workers may use them. Start/refresh additionally check the
 worker's allowed account binding. Never put the worker token in a URL.

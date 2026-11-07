@@ -20,8 +20,8 @@ This consolidation reviewed documents only and ran no application/provider tests
 
 Baseline: 2026-09-27. Owner: coordinator, fleet protocol and Gradio bridge.
 
-Source reconciliation: 2026-10-23 at `d465e72`. The
-[current source review](Tasks.md#implementation-status) records implemented campaign,
+Current documentation reconciliation: 2026-11-07 at `eee837a`; see [current findings](Tasks.md#source-review-2026-11-07). The historical 2026-10-23 review at `d465e72` in the
+[dated source review](Tasks.md#implementation-status) records implemented campaign,
 OAuth and twenty-slot browser capacity separately from remaining mixed-client, artifact,
 final legacy mapping and operations acceptance. No new runtime tests ran here.
 

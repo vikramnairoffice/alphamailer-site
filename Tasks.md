@@ -1,5 +1,23 @@
 # Orchestrator tasks
 
+<a id="source-review-2026-11-07"></a>
+## Source and contract review — 2026-11-07
+
+HEAD `eee837a`. Reviewed registry/fleet routes, `fleet_schemas.py`,
+`google_oauth.py`, configuration and exported v1 contracts. Worker capacity is
+1 by default and bounded to 20; individual prepared messages retain limits of
+50 recipients, four attachments and 250,000 body characters. Removed aggregate
+campaign count/size caps do not remove those per-message checks.
+
+The shared protocol still supports preview and explicit `confirmation=SEND`.
+Automation's owned local coordinator enables delivery for its Send-driven UI;
+an independently deployed coordinator retains its own enablement policy.
+The OAuth broker requests email identity, gmail.compose, drive.file and
+calendar.events, distinct from API Auth Validator's broader scope selections.
+No schemas or endpoints changed in this documentation pass. Mixed-client,
+original-endpoint compatibility, live OAuth/provider and deployment/retention
+acceptance remain open; no server/provider tests were rerun here.
+
 
 ## Consolidated sections
 

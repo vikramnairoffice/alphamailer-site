@@ -1,5 +1,7 @@
 # AlphaMailer Orchestrator (FastAPI)
 
+Documentation/source review: 2026-11-07, HEAD `eee837a`. The current fleet, Google OAuth and registry routes were compared with `app/` and the v1 schemas. [Review findings](Tasks.md#source-review-2026-11-07) distinguish server defaults from Automation's owned local coordinator and retain the historical Render setup as deployment reference.
+
 
 ## Consolidated sections
 
@@ -113,7 +115,7 @@ Response:
 ## Next steps
 
 Worker heartbeats and fleet/campaign APIs already exist. Use the
-[current source review](Tasks.md#implementation-status-current-source-review---2026-10-23)
+[current source review](Tasks.md#source-review-2026-11-07)
 and [tasks](Tasks.md) for remaining legacy mapping, mixed-client recovery,
 artifact persistence and operations. Run one coordinator process for the current
 process-local Gradio bridge. Deployment is a separate requested operation;

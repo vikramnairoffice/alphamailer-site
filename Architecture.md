@@ -1,5 +1,7 @@
 # Alphamailer Orchestrator architecture
 
+Source review: 2026-11-07, HEAD `eee837a`. [fleet_schemas.py](app/fleet_schemas.py) owns the twenty-slot maximum, default capacity one, per-message bounds and SEND confirmation. Campaign aggregate count/size caps are absent; individual message validation, ownership and pacing remain. [Current review](Tasks.md#source-review-2026-11-07) preserves deployment and mixed-client acceptance gates.
+
 
 ## Consolidated sections
 
@@ -25,7 +27,7 @@ flowchart TB
     Android -. direct reads .-> Turso
     Automation -. direct reads .-> Turso
     Automation --> Extension[Chrome / Firefox extension]
-    Extension --> Tabs[Up to ten Gmail tabs, different verified accounts]
+    Extension --> Tabs[Up to twenty Gmail tabs, different verified accounts]
 ```
 
 The engine is shown once as a shared logical layer. It executes inside each
